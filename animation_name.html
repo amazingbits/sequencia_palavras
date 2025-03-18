@@ -16,6 +16,7 @@
       justify-content: center;
       align-items: center;
       justify-items: center;
+      overflow: hidden; /* Previne rolagem */
     }
 
     .container {
@@ -47,9 +48,9 @@
     }
 
     #subtitle-container {
-      position: absolute;
+      position: fixed; /* Usar fixed para garantir que o elemento fique fixo na tela */
       bottom: 80px;
-      width: 100vw;
+      width: 100%;
       max-width: 90%;
       left: 50%;
       transform: translateX(-50%);
