@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Palavras</title>
+  <link rel="stylesheet" href="assets/css/fonts.css">
+  <link rel="stylesheet" href="assets/css/global.css">
+  <style>
+    body {
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      justify-items: center;
+    }
+
+    .container {
+      width: 100%;
+      height: 100%;
+      background: rgb(108, 141, 153);
+      background: -moz-linear-gradient(0deg, rgba(108, 141, 153, 1) 0%, rgba(161, 196, 209, 1) 20%, rgba(196, 225, 236, 1) 50%, rgba(223, 239, 245, 1) 80%, rgba(243, 252, 255, 1) 100%);
+      background: -webkit-linear-gradient(0deg, rgba(108, 141, 153, 1) 0%, rgba(161, 196, 209, 1) 20%, rgba(196, 225, 236, 1) 50%, rgba(223, 239, 245, 1) 80%, rgba(243, 252, 255, 1) 100%);
+      background: linear-gradient(0deg, rgba(108, 141, 153, 1) 0%, rgba(161, 196, 209, 1) 20%, rgba(196, 225, 236, 1) 50%, rgba(223, 239, 245, 1) 80%, rgba(243, 252, 255, 1) 100%);
+      filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#6c8d99", endColorstr="#f3fcff", GradientType=1);
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      justify-items: center;
+    }
+
+    .container .ice_mountain {
+      opacity: 0.3;
+      position: absolute;
+      bottom: -15px;
+      right: -20px;
+    }
+
+    .username {
+      position: fixed;
+      right: 10px;
+      top: 10px;
+      z-index: 2000;
+    }
+
+    .username p {
+      font-weight: bold;
+      text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
+      color: #d9ecff;
+      border-radius: 10px;
+    }
+
+    .words {
+      font-weight: bold;
+      text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
+      color: #d9ecff;
+      border-radius: 10px;
+      font-size: 3rem;
+      text-align: center;
+    }
+
+    .recording {
+      position: fixed;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: 15px;
+      text-align: center;
+    }
+
+    .recording img {
+      max-width: 50px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="username"></div>
+
+  <div class="container">
+    <img class="ice_mountain" src="assets/media/image/ice_mountain.png" alt="Montanha de gelo">
+    <div class="words"></div>
+  </div>
+
+  <div class="recording">
+    <img src="assets/media/image/recording.gif" alt="Icone de um microfone indicando que está gravando o audio">
+  </div>
+
+  <script src="assets/js/repository.js"></script>
+  <script>
+    const db = new IndexedDBRepository("audios", 1);
+    async function dbInit() {
+      db.init(["tracks"])
+    }
+    dbInit();
+
+    const username = window.localStorage.getItem("username") ?? "Usuário";
+    const usernameWrapper = document.querySelector(".username");
+    usernameWrapper.insertAdjacentHTML("beforeend", `<p>Olá, ${username}</p>`);
+
+    const wordsArray = ["gato", "cachorro", "pássaro", "elefante", "leão", "girafa", "peixe", "tigre", "urso", "cobra", "lagarto", "leopardo", "foca"];
+    const wordsDiv = document.querySelector(".words");
+    function showRandomWords() {
+      let shuffled = wordsArray.sort(() => 0.5 - Math.random()).slice(0, 5);
+      wordsDiv.innerHTML = shuffled.join(", ");
+    }
+    showRandomWords();
+
+    async function saveAudio(blob) {
+      await db.init(["tracks"]);
+      await db.add("tracks", blob);
+    }
+
+    async function downloadAudio(blob) {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${uniqid("audio_")}.mp3`;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function uniqid(prefix = "") {
+      const timestamp = Date.now().toString(36);
+      const randomPart = Math.random().toString(36).substr(2, 6);
+      return prefix + timestamp + randomPart;
+    }
+
+    let mediaRecorder;
+    let audioChunks = [];
+    async function record() {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      mediaRecorder = new MediaRecorder(stream);
+      audioChunks = [];
+
+      mediaRecorder.ondataavailable = event => { audioChunks.push(event.data); };
+
+      mediaRecorder.onstop = async () => {
+        const audioBlob = new Blob(audioChunks, { type: "audio/mp3" });
+        // await saveAudio(audioBlob);
+        await downloadAudio(audioBlob);
+        setTimeout(() => {
+          window.location.href = "index.html";
+        }, 500);
+      };
+
+      mediaRecorder.start();
+
+      setTimeout(() => {
+        mediaRecorder.stop();
+      }, 5000);
+
+    }
+    record();
+  </script>
+</body>
+
+</html>

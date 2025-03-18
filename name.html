@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Palavras</title>
+  <link rel="stylesheet" href="assets/css/fonts.css">
+  <link rel="stylesheet" href="assets/css/global.css">
+  <style>
+    body {
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      justify-items: center;
+    }
+
+    .container {
+      width: 100%;
+      height: 100%;
+      background: rgb(108, 141, 153);
+      background: -moz-linear-gradient(0deg, rgba(108, 141, 153, 1) 0%, rgba(161, 196, 209, 1) 20%, rgba(196, 225, 236, 1) 50%, rgba(223, 239, 245, 1) 80%, rgba(243, 252, 255, 1) 100%);
+      background: -webkit-linear-gradient(0deg, rgba(108, 141, 153, 1) 0%, rgba(161, 196, 209, 1) 20%, rgba(196, 225, 236, 1) 50%, rgba(223, 239, 245, 1) 80%, rgba(243, 252, 255, 1) 100%);
+      background: linear-gradient(0deg, rgba(108, 141, 153, 1) 0%, rgba(161, 196, 209, 1) 20%, rgba(196, 225, 236, 1) 50%, rgba(223, 239, 245, 1) 80%, rgba(243, 252, 255, 1) 100%);
+      filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#6c8d99", endColorstr="#f3fcff", GradientType=1);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .container .ice_mountain {
+      opacity: 0.3;
+      position: absolute;
+      bottom: -15px;
+      right: -20px;
+    }
+
+    form {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 100vw;
+      max-width: 300px;
+      z-index: 2000;
+    }
+
+    form input {
+      width: 100%;
+      padding: 1rem;
+      background-color: #FFFFFF90;
+      border-radius: 20px;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #414141CC;
+    }
+
+    form input::placeholder {
+      opacity: 0.7;
+    }
+  </style>
+</head>
+
+<body>
+  <snow-overlay count="70" scale="1.5"></snow-overlay>
+  <div class="container">
+    <img class="ice_mountain" src="assets/media/image/ice_mountain.png" alt="Montanha de gelo">
+    <form id="insertName">
+      <input type="text" name="username" id="username" placeholder="Digite o seu nome" autofocus>
+    </form>
+  </div>
+
+  <script src="assets/js/snowflakes.js"></script>
+  <script>
+    const form = document.querySelector("#insertName");
+    form.addEventListener("submit", (event) => {
+      event.preventDefault()
+      const username = document.querySelector("input[name='username']").value.trim();
+      window.localStorage.setItem("username", username);
+      window.location.href = "task.html";
+    });
+  </script>
+</body>
+
+</html>

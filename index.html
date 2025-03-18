@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Página Inicial - Permissões</title>
+  <style>
+    body {
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #f3f4f6;
+      font-family: Arial, sans-serif;
+      margin: 0;
+    }
+
+    .container {
+      text-align: center;
+      background-color: white;
+      padding: 40px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 400px;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+    }
+
+    button {
+      padding: 12px 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      margin-top: 20px;
+    }
+
+    button:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>Permissões para Microfone e Áudio</h1>
+    <p>Para continuar, precisamos da sua permissão para ativar o microfone e o áudio.</p>
+    <button id="startButton" disabled>Avançar para a próxima página</button>
+  </div>
+
+  <script>
+    // Função para pedir permissão ao usuário
+    function requestPermissions() {
+      navigator.mediaDevices.getUserMedia({ audio: true })
+        .then(() => {
+          // Se a permissão for concedida, habilitar o botão
+          document.getElementById("startButton").disabled = false;
+        })
+        .catch((err) => {
+          // Se o usuário negar a permissão ou ocorrer erro
+          alert("Você precisa permitir o acesso ao microfone para continuar.");
+        });
+    }
+
+    // Aguardar o carregamento da página e solicitar permissões
+    window.onload = () => {
+      requestPermissions();
+    };
+
+    // Ação para redirecionar o usuário para a próxima página
+    document.getElementById("startButton").addEventListener("click", () => {
+      window.location.href = "animation_name.html"; // Coloque a URL da próxima página aqui
+    });
+  </script>
+</body>
+
+</html>
